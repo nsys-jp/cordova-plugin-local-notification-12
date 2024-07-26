@@ -1,23 +1,18 @@
 /*
  * Apache 2.0 License
  *
- * Copyright (c) Sebastian Katzer 2017
- * Contributor Bhumin Bhandari
+ * Copyright (c) Sebastian Katzer 2017 Contributor Bhumin Bhandari
  *
- * This file contains Original Code and/or Modifications of Original Code
- * as defined in and that are subject to the Apache License
- * Version 2.0 (the 'License'). You may not use this file except in
+ * This file contains Original Code and/or Modifications of Original Code as defined in and that are
+ * subject to the Apache License Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
- * http://opensource.org/licenses/Apache-2.0/ and read it before using this
- * file.
+ * http://opensource.org/licenses/Apache-2.0/ and read it before using this file.
  *
- * The Original Code and all software distributed under the License are
- * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
- * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
- * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
- * Please see the License for the specific language governing rights and
- * limitations under the License.
+ * The Original Code and all software distributed under the License are distributed on an 'AS IS'
+ * basis, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL
+ * SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT. Please see the License for the specific
+ * language governing rights and limitations under the License.
  */
 
 package de.appplant.cordova.plugin.notification;
@@ -47,8 +42,8 @@ import de.appplant.cordova.plugin.notification.util.LaunchUtils;
 import static de.appplant.cordova.plugin.notification.Notification.EXTRA_UPDATE;
 
 /**
- * Builder class for local notifications. Build fully configured local
- * notification specified by JSON object passed from JS side.
+ * Builder class for local notifications. Build fully configured local notification specified by
+ * JSON object passed from JS side.
  */
 public final class Builder {
 
@@ -119,47 +114,35 @@ public final class Builder {
             return new Notification(context, options);
         }
 
-        Uri sound     = options.getSound();
+        Uri sound = options.getSound();
         Bundle extras = new Bundle();
 
         extras.putInt(Notification.EXTRA_ID, options.getId());
         extras.putString(Options.EXTRA_SOUND, sound.toString());
 
-        builder = findOrCreateBuilder()
-                .setDefaults(options.getDefaults())
-                .setExtras(extras)
-                .setOnlyAlertOnce(false)
-                .setChannelId(options.getChannel())
-                .setContentTitle(options.getTitle())
-                .setContentText(options.getText())
-                .setTicker(options.getText())
-                .setNumber(options.getNumber())
-                .setAutoCancel(options.isAutoClear())
-                .setOngoing(options.isSticky())
-                .setColor(options.getColor())
-                .setVisibility(options.getVisibility())
-                .setPriority(options.getPrio())
-                .setShowWhen(options.showClock())
-                .setUsesChronometer(options.showChronometer())
-                .setGroup(options.getGroup())
-                .setGroupSummary(options.getGroupSummary())
-                .setTimeoutAfter(options.getTimeout())
+        builder = findOrCreateBuilder().setDefaults(options.getDefaults()).setExtras(extras)
+                .setOnlyAlertOnce(false).setChannelId(options.getChannel())
+                .setContentTitle(options.getTitle()).setContentText(options.getText())
+                .setTicker(options.getText()).setNumber(options.getNumber())
+                .setAutoCancel(options.isAutoClear()).setOngoing(options.isSticky())
+                .setColor(options.getColor()).setVisibility(options.getVisibility())
+                .setPriority(options.getPrio()).setShowWhen(options.showClock())
+                .setUsesChronometer(options.showChronometer()).setGroup(options.getGroup())
+                .setGroupSummary(options.getGroupSummary()).setTimeoutAfter(options.getTimeout())
                 .setLights(options.getLedColor(), options.getLedOn(), options.getLedOff());
 
         if (!sound.equals(Uri.EMPTY) && !isUpdate()) {
             builder.setSound(sound);
         }
 
-        // API < 26.  Setting sound to null will prevent playing if we have no sound for any reason,
+        // API < 26. Setting sound to null will prevent playing if we have no sound for any reason,
         // including a 0 volume.
         if (options.isWithoutSound()) {
             builder.setSound(null);
         }
 
         if (options.isWithProgressBar()) {
-            builder.setProgress(
-                    options.getProgressMaxValue(),
-                    options.getProgressValue(),
+            builder.setProgress(options.getProgressMaxValue(), options.getProgressValue(),
                     options.isIndeterminateProgress());
         }
 
@@ -190,23 +173,20 @@ public final class Builder {
     }
 
     void applyFullScreenIntent(NotificationCompat.Builder builder) {
-        String pkgName  = context.getPackageName();
+        String pkgName = context.getPackageName();
 
-        int notificationId  = options.getId();
-        Intent intent = context
-            .getPackageManager()
-            .getLaunchIntentForPackage(pkgName)
-            .putExtra("launchNotificationId", notificationId);
+        int notificationId = options.getId();
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(pkgName)
+                .putExtra("launchNotificationId", notificationId).setPackage(pkgName);
 
         PendingIntent pendingIntent =
-          LaunchUtils.getActivityPendingIntent(context, intent, notificationId);
+                LaunchUtils.getActivityPendingIntent(context, intent, notificationId);
         builder.setFullScreenIntent(pendingIntent, true);
     }
 
     /**
-     * Convert a bitmap to a circular bitmap.
-     * This code has been extracted from the Phonegap Plugin Push plugin:
-     * https://github.com/phonegap/phonegap-plugin-push
+     * Convert a bitmap to a circular bitmap. This code has been extracted from the Phonegap Plugin
+     * Push plugin: https://github.com/phonegap/phonegap-plugin-push
      *
      * @param bitmap Bitmap to convert.
      * @return Circular bitmap.
@@ -216,12 +196,13 @@ public final class Builder {
             return null;
         }
 
-        final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        final Bitmap output =
+                Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(output);
         final int color = Color.RED;
         final Paint paint = new Paint();
         final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        //final RectF rectF = new RectF(rect);
+        // final RectF rectF = new RectF(rect);
 
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
@@ -246,7 +227,7 @@ public final class Builder {
      */
     private void applyStyle(NotificationCompat.Builder builder) {
         Message[] messages = options.getMessages();
-        String summary     = options.getSummary();
+        String summary = options.getSummary();
 
         if (messages != null) {
             applyMessagingStyle(builder, messages);
@@ -283,11 +264,10 @@ public final class Builder {
     /**
      * Apply inbox style.
      *
-     * @param builder  Local notification builder instance.
+     * @param builder Local notification builder instance.
      * @param messages The messages to add to the conversation.
      */
-    private void applyMessagingStyle(NotificationCompat.Builder builder,
-                                     Message[] messages) {
+    private void applyMessagingStyle(NotificationCompat.Builder builder, Message[] messages) {
 
         NotificationCompat.MessagingStyle style;
 
@@ -305,18 +285,16 @@ public final class Builder {
      * Apply inbox style.
      *
      * @param builder Local notification builder instance.
-     * @param pics    The pictures to show.
+     * @param pics The pictures to show.
      */
-    private void applyBigPictureStyle(NotificationCompat.Builder builder,
-                                      List<Bitmap> pics) {
+    private void applyBigPictureStyle(NotificationCompat.Builder builder, List<Bitmap> pics) {
 
         NotificationCompat.BigPictureStyle style;
         String summary = options.getSummary();
-        String text    = options.getText();
+        String text = options.getText();
 
         style = new NotificationCompat.BigPictureStyle(builder)
-                .setSummaryText(summary == null ? text : summary)
-                .bigPicture(pics.get(0));
+                .setSummaryText(summary == null ? text : summary).bigPicture(pics.get(0));
 
         builder.setStyle(style);
     }
@@ -330,8 +308,7 @@ public final class Builder {
         NotificationCompat.InboxStyle style;
         String text = options.getText();
 
-        style = new NotificationCompat.InboxStyle(builder)
-                .setSummaryText(options.getSummary());
+        style = new NotificationCompat.InboxStyle(builder).setSummaryText(options.getSummary());
 
         for (String line : text.split("\n")) {
             style.addLine(line);
@@ -348,8 +325,7 @@ public final class Builder {
     private void applyBigTextStyle(NotificationCompat.Builder builder) {
         NotificationCompat.BigTextStyle style;
 
-        style = new NotificationCompat.BigTextStyle(builder)
-                .setSummaryText(options.getSummary())
+        style = new NotificationCompat.BigTextStyle(builder).setSummaryText(options.getSummary())
                 .bigText(options.getText());
 
         builder.setStyle(style);
@@ -359,22 +335,19 @@ public final class Builder {
      * Apply media style.
      *
      * @param builder Local notification builder instance.
-     * @param token   The media session token.
+     * @param token The media session token.
      */
     private void applyMediaStyle(NotificationCompat.Builder builder,
-                                 MediaSessionCompat.Token token) {
+            MediaSessionCompat.Token token) {
         MediaStyle style;
 
-        style = new MediaStyle(builder)
-                .setMediaSession(token)
-                .setShowActionsInCompactView(1);
+        style = new MediaStyle(builder).setMediaSession(token).setShowActionsInCompactView(1);
 
         builder.setStyle(style);
     }
 
     /**
-     * Set intent to handle the delete event. Will clean up some persisted
-     * preferences.
+     * Set intent to handle the delete event. Will clean up some persisted preferences.
      *
      * @param builder Local notification builder instance.
      */
@@ -384,22 +357,21 @@ public final class Builder {
             return;
 
         int notificationId = options.getId();
-        Intent intent = new Intent(context, clearReceiver)
-                .setAction(options.getIdentifier())
-                .putExtra(Notification.EXTRA_ID, notificationId);
+        Intent intent = new Intent(context, clearReceiver).setAction(options.getIdentifier())
+                .putExtra(Notification.EXTRA_ID, notificationId)
+                .setPackage(context.getPackageName());
 
         if (extras != null) {
             intent.putExtras(extras);
         }
 
         PendingIntent deleteIntent =
-          LaunchUtils.getBroadcastPendingIntent(context, intent, notificationId);
+                LaunchUtils.getBroadcastPendingIntent(context, intent, notificationId);
         builder.setDeleteIntent(deleteIntent);
     }
 
     /**
-     * Set intent to handle the click event. Will bring the app to
-     * foreground.
+     * Set intent to handle the click event. Will bring the app to foreground.
      *
      * @param builder Local notification builder instance.
      */
@@ -409,25 +381,25 @@ public final class Builder {
             return;
 
         Action[] actions = options.getActions();
-        if (actions != null && actions.length > 0 ) {
-          // if actions are defined, the user must click on button actions to launch the app.
-          // Don't make the notification clickable in this case
-          return;
+        if (actions != null && actions.length > 0) {
+            // if actions are defined, the user must click on button actions to launch the app.
+            // Don't make the notification clickable in this case
+            return;
         }
 
-        int notificationId  =  options.getId();
+        int notificationId = options.getId();
         Intent intent = new Intent(context, clickActivity)
                 .putExtra(Notification.EXTRA_ID, notificationId)
                 .putExtra(Action.EXTRA_ID, Action.CLICK_ACTION_ID)
                 .putExtra(Options.EXTRA_LAUNCH, options.isLaunchingApp())
-                .setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                .setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY).setPackage(context.getPackageName());
 
         if (extras != null) {
             intent.putExtras(extras);
         }
 
         PendingIntent contentIntent =
-          LaunchUtils.getActivityPendingIntent(context, intent, notificationId);
+                LaunchUtils.getActivityPendingIntent(context, intent, notificationId);
         builder.setContentIntent(contentIntent);
     }
 
@@ -436,7 +408,7 @@ public final class Builder {
      *
      * @param builder Local notification builder instance.
      */
-    private void applyActions (NotificationCompat.Builder builder) {
+    private void applyActions(NotificationCompat.Builder builder) {
         Action[] actions = options.getActions();
         NotificationCompat.Action.Builder btn;
 
@@ -444,9 +416,8 @@ public final class Builder {
             return;
 
         for (Action action : actions) {
-             btn = new NotificationCompat.Action.Builder(
-                     action.getIcon(), action.getTitle(),
-                     getPendingIntentForAction(action));
+            btn = new NotificationCompat.Action.Builder(action.getIcon(), action.getTitle(),
+                    getPendingIntentForAction(action));
 
             if (action.isWithInput()) {
                 btn.addRemoteInput(action.getInput());
@@ -457,24 +428,23 @@ public final class Builder {
     }
 
     /**
-     * Returns a new PendingIntent for a notification action, including the
-     * action's identifier.
+     * Returns a new PendingIntent for a notification action, including the action's identifier.
      *
      * @param action Notification action needing the PendingIntent
      */
-    private PendingIntent getPendingIntentForAction (Action action) {
-        int notificationId =  options.getId();
+    private PendingIntent getPendingIntentForAction(Action action) {
+        int notificationId = options.getId();
         Intent intent = new Intent(context, clickActivity)
                 .putExtra(Notification.EXTRA_ID, notificationId)
                 .putExtra(Action.EXTRA_ID, action.getId())
                 .putExtra(Options.EXTRA_LAUNCH, action.isLaunchingApp())
-                .setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                .setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY).setPackage(context.getPackageName());
 
         if (extras != null) {
             intent.putExtras(extras);
         }
 
-      return LaunchUtils.getActivityPendingIntent(context, intent, notificationId);
+        return LaunchUtils.getActivityPendingIntent(context, intent, notificationId);
     }
 
     /**
@@ -483,8 +453,7 @@ public final class Builder {
      * @return true in case of an updated version.
      */
     private boolean isUpdate() {
-        return extras != null
-            && extras.getBoolean(EXTRA_UPDATE, false);
+        return extras != null && extras.getBoolean(EXTRA_UPDATE, false);
     }
 
     /**

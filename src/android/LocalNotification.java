@@ -1,23 +1,18 @@
 /*
  * Apache 2.0 License
  *
- * Copyright (c) Sebastian Katzer 2017
- * Contributor Bhumin Bhandari
+ * Copyright (c) Sebastian Katzer 2017 Contributor Bhumin Bhandari
  *
- * This file contains Original Code and/or Modifications of Original Code
- * as defined in and that are subject to the Apache License
- * Version 2.0 (the 'License'). You may not use this file except in
+ * This file contains Original Code and/or Modifications of Original Code as defined in and that are
+ * subject to the Apache License Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
- * http://opensource.org/licenses/Apache-2.0/ and read it before using this
- * file.
+ * http://opensource.org/licenses/Apache-2.0/ and read it before using this file.
  *
- * The Original Code and all software distributed under the License are
- * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
- * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
- * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
- * Please see the License for the specific language governing rights and
- * limitations under the License.
+ * The Original Code and all software distributed under the License are distributed on an 'AS IS'
+ * basis, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL
+ * SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT. Please see the License for the specific
+ * language governing rights and limitations under the License.
  */
 
 // codebeat:disable[TOO_MANY_FUNCTIONS]
@@ -79,12 +74,11 @@ import static de.appplant.cordova.plugin.notification.Notification.Type.TRIGGERE
 // import com.getcapacitor.CapacitorWebView;
 
 /**
- * This plugin utilizes the Android AlarmManager in combination with local
- * notifications. When a local notification is scheduled the alarm manager takes
- * care of firing the event. When the event is processed, a notification is put
- * in the Android notification center and status bar.
+ * This plugin utilizes the Android AlarmManager in combination with local notifications. When a
+ * local notification is scheduled the alarm manager takes care of firing the event. When the event
+ * is processed, a notification is put in the Android notification center and status bar.
  */
-@SuppressWarnings({ "Convert2Diamond", "Convert2Lambda" })
+@SuppressWarnings({"Convert2Diamond", "Convert2Lambda"})
 public class LocalNotification extends CordovaPlugin {
 
     // Reference to the web view for static access
@@ -106,9 +100,9 @@ public class LocalNotification extends CordovaPlugin {
     private CallbackContext callbackContext;
 
     /**
-     * Called after plugin construction and fields have been initialized. Prefer to
-     * use pluginInitialize instead since there is no value in having parameters on
-     * the initialize() function.
+     * Called after plugin construction and fields have been initialized. Prefer to use
+     * pluginInitialize instead since there is no value in having parameters on the initialize()
+     * function.
      */
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -137,13 +131,13 @@ public class LocalNotification extends CordovaPlugin {
     /**
      * Executes the request.
      *
-     * This method is called from the WebView thread. To do a non-trivial amount of
-     * work, use: cordova.getThreadPool().execute(runnable);
+     * This method is called from the WebView thread. To do a non-trivial amount of work, use:
+     * cordova.getThreadPool().execute(runnable);
      *
      * To run on the UI thread, use: cordova.getActivity().runOnUiThread(runnable);
      *
-     * @param action  The action to execute.
-     * @param args    The exec() arguments in JSON form.
+     * @param action The action to execute.
+     * @param args The exec() arguments in JSON form.
      * @param command The callback context used when calling back into JavaScript.
      *
      * @return Whether the action was valid.
@@ -224,7 +218,7 @@ public class LocalNotification extends CordovaPlugin {
         Intent intentToLaunch = new Intent(context, TriggerReceiver.class);
         intentToLaunch.putExtra("Callfrom", "reminders");
 
-        final PendingIntent resultPendingIntent = PendingIntent.getActivity(context,
+        final  resultPendingIntent = PendingIntent.getActivity(context,
                 0, intentToLaunch, PendingIntent.FLAG_IMMUTABLE);
 
         mBuilder = new NotificationCompat.Builder(context,NOTIFICATION_CHANNEL_ID);
@@ -253,8 +247,8 @@ public class LocalNotification extends CordovaPlugin {
     private boolean needsDoNotDisturbPermissions() {
         Context mContext = this.cordova.getActivity().getApplicationContext();
 
-        NotificationManager mNotificationManager = (NotificationManager) mContext
-                .getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager mNotificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
         return SDK_INT >= M && !mNotificationManager.isNotificationPolicyAccessGranted();
     }
@@ -262,8 +256,8 @@ public class LocalNotification extends CordovaPlugin {
     /**
      * Determine if we have do not disturb permissions.
      *
-     * @param command callback context. Returns with true if the we have
-     *                permissions, false if we do not.
+     * @param command callback context. Returns with true if the we have permissions, false if we do
+     *        not.
      */
     private void hasDoNotDisturbPermissions(CallbackContext command) {
         success(command, !needsDoNotDisturbPermissions());
@@ -272,8 +266,8 @@ public class LocalNotification extends CordovaPlugin {
     /**
      * Launch an activity to request do not disturb permissions
      *
-     * @param command callback context. Returns with results of
-     *                hasDoNotDisturbPermissions after the activity is closed.
+     * @param command callback context. Returns with results of hasDoNotDisturbPermissions after the
+     *        activity is closed.
      */
     private void requestDoNotDisturbPermissions(CallbackContext command) {
         if (needsDoNotDisturbPermissions()) {
@@ -283,7 +277,8 @@ public class LocalNotification extends CordovaPlugin {
             pluginResult.setKeepCallback(true); // Keep callback
             command.sendPluginResult(pluginResult);
 
-            Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+            Intent intent = new Intent(
+                    android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
 
             cordova.startActivityForResult(this, intent, REQUEST_PERMISSIONS_CALL);
             return;
@@ -306,8 +301,8 @@ public class LocalNotification extends CordovaPlugin {
     /**
      * Determine if we have do not disturb permissions.
      *
-     * @param command callback context. Returns with true if the we have
-     *                permissions, false if we do not.
+     * @param command callback context. Returns with true if the we have permissions, false if we do
+     *        not.
      */
     private void isIgnoringBatteryOptimizations(CallbackContext command) {
         success(command, ignoresBatteryOptimizations());
@@ -316,8 +311,8 @@ public class LocalNotification extends CordovaPlugin {
     /**
      * Launch an activity to request do not disturb permissions
      *
-     * @param command callback context. Returns with results of
-     *                hasDoNotDisturbPermissions after the activity is closed.
+     * @param command callback context. Returns with results of hasDoNotDisturbPermissions after the
+     *        activity is closed.
      */
     private void requestIgnoreBatteryOptimizations(CallbackContext command) {
         if (!ignoresBatteryOptimizations()) {
@@ -336,7 +331,8 @@ public class LocalNotification extends CordovaPlugin {
             // risks having the app banned.
             try {
                 PackageManager packageManager = this.cordova.getContext().getPackageManager();
-                PackageInfo pi = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS);
+                PackageInfo pi =
+                        packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS);
 
                 for (int i = 0; i < pi.requestedPermissions.length; ++i) {
                     if (pi.requestedPermissions[i].equals(REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)) {
@@ -429,7 +425,7 @@ public class LocalNotification extends CordovaPlugin {
     /**
      * Register action group.
      *
-     * @param args    The exec() arguments in JSON form.
+     * @param args The exec() arguments in JSON form.
      * @param command The callback context used when calling back into JavaScript.
      */
     private void actions(JSONArray args, CallbackContext command) {
@@ -439,26 +435,26 @@ public class LocalNotification extends CordovaPlugin {
         Context context = cordova.getActivity();
 
         switch (task) {
-        case 0:
-            ActionGroup group = ActionGroup.parse(context, id, list);
-            ActionGroup.register(group);
-            command.success();
-            break;
-        case 1:
-            ActionGroup.unregister(id);
-            command.success();
-            break;
-        case 2:
-            boolean found = ActionGroup.isRegistered(id);
-            success(command, found);
-            break;
+            case 0:
+                ActionGroup group = ActionGroup.parse(context, id, list);
+                ActionGroup.register(group);
+                command.success();
+                break;
+            case 1:
+                ActionGroup.unregister(id);
+                command.success();
+                break;
+            case 2:
+                boolean found = ActionGroup.isRegistered(id);
+                success(command, found);
+                break;
         }
     }
 
     /**
      * Schedule multiple local notifications.
      *
-     * @param toasts  The notifications to schedule.
+     * @param toasts The notifications to schedule.
      * @param command The callback context used when calling back into JavaScript.
      */
     private void schedule(JSONArray toasts, CallbackContext command) {
@@ -504,7 +500,7 @@ public class LocalNotification extends CordovaPlugin {
     /**
      * Cancel multiple local notifications.
      *
-     * @param ids     Set of local notification IDs.
+     * @param ids Set of local notification IDs.
      * @param command The callback context used when calling back into JavaScript.
      */
     private void cancel(JSONArray ids, CallbackContext command) {
@@ -537,7 +533,7 @@ public class LocalNotification extends CordovaPlugin {
     /**
      * Clear multiple local notifications without canceling them.
      *
-     * @param ids     Set of local notification IDs.
+     * @param ids Set of local notification IDs.
      * @param command The callback context used when calling back into JavaScript.
      */
     private void clear(JSONArray ids, CallbackContext command) {
@@ -570,7 +566,7 @@ public class LocalNotification extends CordovaPlugin {
     /**
      * Get the type of the notification (unknown, scheduled, triggered).
      *
-     * @param args    The exec() arguments in JSON form.
+     * @param args The exec() arguments in JSON form.
      * @param command The callback context used when calling back into JavaScript.
      */
     private void type(JSONArray args, CallbackContext command) {
@@ -583,22 +579,22 @@ public class LocalNotification extends CordovaPlugin {
         }
 
         switch (toast.getType()) {
-        case SCHEDULED:
-            command.success("scheduled");
-            break;
-        case TRIGGERED:
-            command.success("triggered");
-            break;
-        default:
-            command.success("unknown");
-            break;
+            case SCHEDULED:
+                command.success("scheduled");
+                break;
+            case TRIGGERED:
+                command.success("triggered");
+                break;
+            default:
+                command.success("unknown");
+                break;
         }
     }
 
     /**
      * Set of IDs from all existent notifications.
      *
-     * @param args    The exec() arguments in JSON form.
+     * @param args The exec() arguments in JSON form.
      * @param command The callback context used when calling back into JavaScript.
      */
     private void ids(JSONArray args, CallbackContext command) {
@@ -607,18 +603,18 @@ public class LocalNotification extends CordovaPlugin {
         List<Integer> ids;
 
         switch (type) {
-        case 0:
-            ids = mgr.getIds();
-            break;
-        case 1:
-            ids = mgr.getIdsByType(SCHEDULED);
-            break;
-        case 2:
-            ids = mgr.getIdsByType(TRIGGERED);
-            break;
-        default:
-            ids = new ArrayList<Integer>(0);
-            break;
+            case 0:
+                ids = mgr.getIds();
+                break;
+            case 1:
+                ids = mgr.getIdsByType(SCHEDULED);
+                break;
+            case 2:
+                ids = mgr.getIdsByType(TRIGGERED);
+                break;
+            default:
+                ids = new ArrayList<Integer>(0);
+                break;
         }
 
         command.success(new JSONArray(ids));
@@ -627,7 +623,7 @@ public class LocalNotification extends CordovaPlugin {
     /**
      * Options from local notification.
      *
-     * @param args    The exec() arguments in JSON form.
+     * @param args The exec() arguments in JSON form.
      * @param command The callback context used when calling back into JavaScript.
      */
     private void notification(JSONArray args, CallbackContext command) {
@@ -644,7 +640,7 @@ public class LocalNotification extends CordovaPlugin {
     /**
      * Set of options from local notification.
      *
-     * @param args    The exec() arguments in JSON form.
+     * @param args The exec() arguments in JSON form.
      * @param command The callback context used when calling back into JavaScript.
      */
     private void notifications(JSONArray args, CallbackContext command) {
@@ -654,21 +650,21 @@ public class LocalNotification extends CordovaPlugin {
         List<JSONObject> options;
 
         switch (type) {
-        case 0:
-            options = mgr.getOptions();
-            break;
-        case 1:
-            options = mgr.getOptionsByType(SCHEDULED);
-            break;
-        case 2:
-            options = mgr.getOptionsByType(TRIGGERED);
-            break;
-        case 3:
-            options = mgr.getOptionsById(toList(ids));
-            break;
-        default:
-            options = new ArrayList<JSONObject>(0);
-            break;
+            case 0:
+                options = mgr.getOptions();
+                break;
+            case 1:
+                options = mgr.getOptionsByType(SCHEDULED);
+                break;
+            case 2:
+                options = mgr.getOptionsByType(TRIGGERED);
+                break;
+            case 3:
+                options = mgr.getOptionsById(toList(ids));
+                break;
+            default:
+                options = new ArrayList<JSONObject>(0);
+                break;
         }
 
         command.success(new JSONArray(options));
@@ -691,7 +687,7 @@ public class LocalNotification extends CordovaPlugin {
      * Invoke success callback with a single boolean argument.
      *
      * @param command The callback context used when calling back into JavaScript.
-     * @param arg     The single argument to pass through.
+     * @param arg The single argument to pass through.
      */
     private void success(CallbackContext command, boolean arg) {
         PluginResult result = new PluginResult(PluginResult.Status.OK, arg);
@@ -710,7 +706,7 @@ public class LocalNotification extends CordovaPlugin {
     /**
      * Fire given event on JS side. Does inform all event listeners.
      *
-     * @param event        The event name.
+     * @param event The event name.
      * @param notification Optional notification to pass with.
      */
     static void fireEvent(String event, Notification notification) {
@@ -722,7 +718,7 @@ public class LocalNotification extends CordovaPlugin {
      *
      * @param event The event name.
      * @param toast Optional notification to pass with.
-     * @param data  Event object with additional data.
+     * @param data Event object with additional data.
      */
     static void fireEvent(String event, Notification toast, JSONObject data) {
         String params, js;
@@ -754,7 +750,7 @@ public class LocalNotification extends CordovaPlugin {
         sendJavascript(js);
     }
 
-   /**
+    /**
      * Use this instead of deprecated sendJavascript
      *
      * @param js JS code snippet as string.
@@ -776,7 +772,8 @@ public class LocalNotification extends CordovaPlugin {
         ((Activity) (view.getContext())).runOnUiThread(new Runnable() {
             public void run() {
                 view.loadUrl("javascript:" + js);
-                View engineView = view.getEngine() != null ? view.getEngine().getView() : view.getView();
+                View engineView =
+                        view.getEngine() != null ? view.getEngine().getView() : view.getView();
 
                 if (!isInForeground()) {
                     engineView.dispatchWindowVisibilityChanged(View.VISIBLE);
@@ -784,24 +781,25 @@ public class LocalNotification extends CordovaPlugin {
             }
         });
 
-        // Capacitor FIX: If the app is in the background, we need to make sure the notification is shown.
+        // Capacitor FIX: If the app is in the background, we need to make sure the notification is
+        // shown.
         // if (webView.get() == null) {
-        //     return;
+        // return;
         // }
 
         // try {
-        //     final CapacitorWebView capWebView = (CapacitorWebView) webView.get().getView();
-        //     if (capWebView == null) {
-        //         return;
-        //     }
+        // final CapacitorWebView capWebView = (CapacitorWebView) webView.get().getView();
+        // if (capWebView == null) {
+        // return;
+        // }
 
-        //     capWebView.post(new Runnable() {
-        //         public void run() {
-        //             capWebView.loadUrl("javascript:" + js);
-        //         }
-        //     });
+        // capWebView.post(new Runnable() {
+        // public void run() {
+        // capWebView.loadUrl("javascript:" + js);
+        // }
+        // });
         // } catch (Exception e) {
-        //     e.printStackTrace();
+        // e.printStackTrace();
         // }
     }
 
@@ -815,7 +813,8 @@ public class LocalNotification extends CordovaPlugin {
 
         CordovaWebView view = webView.get();
 
-        KeyguardManager km = (KeyguardManager) view.getContext().getSystemService(Context.KEYGUARD_SERVICE);
+        KeyguardManager km =
+                (KeyguardManager) view.getContext().getSystemService(Context.KEYGUARD_SERVICE);
 
         // noinspection SimplifiableIfStatement
         if (km != null && km.isKeyguardLocked())

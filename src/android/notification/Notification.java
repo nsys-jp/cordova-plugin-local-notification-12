@@ -1,23 +1,18 @@
 /*
  * Apache 2.0 License
  *
- * Copyright (c) Sebastian Katzer 2017
- * Contributor Bhumin Bhandari
+ * Copyright (c) Sebastian Katzer 2017 Contributor Bhumin Bhandari
  *
- * This file contains Original Code and/or Modifications of Original Code
- * as defined in and that are subject to the Apache License
- * Version 2.0 (the 'License'). You may not use this file except in
+ * This file contains Original Code and/or Modifications of Original Code as defined in and that are
+ * subject to the Apache License Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
- * http://opensource.org/licenses/Apache-2.0/ and read it before using this
- * file.
+ * http://opensource.org/licenses/Apache-2.0/ and read it before using this file.
  *
- * The Original Code and all software distributed under the License are
- * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
- * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
- * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
- * Please see the License for the specific language governing rights and
- * limitations under the License.
+ * The Original Code and all software distributed under the License are distributed on an 'AS IS'
+ * basis, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL
+ * SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT. Please see the License for the specific
+ * language governing rights and limitations under the License.
  */
 
 package de.appplant.cordova.plugin.notification;
@@ -57,8 +52,8 @@ import static androidx.core.app.NotificationCompat.PRIORITY_MIN;
 import de.appplant.cordova.plugin.notification.util.LaunchUtils;
 
 /**
- * Wrapper class around OS notification class. Handles basic operations
- * like show, delete, cancel for a single local notification instance.
+ * Wrapper class around OS notification class. Handles basic operations like show, delete, cancel
+ * for a single local notification instance.
  */
 public final class Notification {
 
@@ -98,10 +93,10 @@ public final class Notification {
      * @param options Parsed notification options.
      * @param builder Pre-configured notification builder.
      */
-    Notification (Context context, Options options, NotificationCompat.Builder builder) {
-        this.context  = context;
-        this.options  = options;
-        this.builder  = builder;
+    Notification(Context context, Options options, NotificationCompat.Builder builder) {
+        this.context = context;
+        this.options = options;
+        this.builder = builder;
     }
 
     /**
@@ -111,9 +106,9 @@ public final class Notification {
      * @param options Parsed notification options.
      */
     public Notification(Context context, Options options) {
-        this.context  = context;
-        this.options  = options;
-        this.builder  = null;
+        this.context = context;
+        this.options = options;
+        this.builder = null;
     }
 
     /**
@@ -155,9 +150,9 @@ public final class Notification {
      * Notification type can be one of triggered or scheduled.
      */
     public Type getType() {
-        Manager mgr                    = Manager.getInstance(context);
+        Manager mgr = Manager.getInstance(context);
         StatusBarNotification[] toasts = mgr.getActiveNotifications();
-        int id                         = getId();
+        int id = getId();
 
         for (StatusBarNotification toast : toasts) {
             if (toast.getId() == id) {
@@ -176,8 +171,8 @@ public final class Notification {
      */
     void schedule(Request request, Class<?> receiver) {
         List<Pair<Date, Intent>> intents = new ArrayList<Pair<Date, Intent>>();
-        Set<String> ids                  = new ArraySet<String>();
-        AlarmManager mgr                 = getAlarmMgr();
+        Set<String> ids = new ArraySet<String>();
+        AlarmManager mgr = getAlarmMgr();
 
         cancelScheduledAlarms();
 
@@ -189,15 +184,15 @@ public final class Notification {
             if (date == null)
                 continue;
 
-            Intent intent = new Intent(context, receiver)
-                    .setAction(PREF_KEY_ID + request.getIdentifier())
-                    .putExtra(Notification.EXTRA_ID, options.getId())
-                    .putExtra(Request.EXTRA_OCCURRENCE, request.getOccurrence());
+            Intent intent =
+                    new Intent(context, receiver).setAction(PREF_KEY_ID + request.getIdentifier())
+                            .putExtra(Notification.EXTRA_ID, options.getId())
+                            .putExtra(Request.EXTRA_OCCURRENCE, request.getOccurrence())
+                            .setPackage(context.getPackageName());
 
             ids.add(intent.getAction());
             intents.add(new Pair<Date, Intent>(date, intent));
-        }
-        while (request.moveNext());
+        } while (request.moveNext());
 
         if (intents.isEmpty()) {
             unpersist();
@@ -212,15 +207,15 @@ public final class Notification {
         }
 
         for (Pair<Date, Intent> pair : intents) {
-            Date date     = pair.first;
-            long time     = date.getTime();
+            Date date = pair.first;
+            long time = date.getTime();
             Intent intent = pair.second;
 
             if (!date.after(new Date()) && trigger(intent, receiver))
                 continue;
             int notificationId = options.getId();
             PendingIntent pi =
-              LaunchUtils.getBroadcastPendingIntent(context, intent, notificationId);
+                    LaunchUtils.getBroadcastPendingIntent(context, intent, notificationId);
 
             try {
                 switch (options.getPrio()) {
@@ -229,7 +224,8 @@ public final class Notification {
                         break;
                     case PRIORITY_MAX:
                         if (SDK_INT >= M) {
-                            AlarmManager.AlarmClockInfo info = new AlarmManager.AlarmClockInfo(time, pi);
+                            AlarmManager.AlarmClockInfo info =
+                                    new AlarmManager.AlarmClockInfo(time, pi);
                             mgr.setAlarmClock(info, pi);
                         } else {
                             mgr.setExact(RTC_WAKEUP, time, pi);
@@ -250,11 +246,11 @@ public final class Notification {
      * Trigger local notification specified by options.
      *
      * @param intent The intent to broadcast.
-     * @param cls    The broadcast class.
+     * @param cls The broadcast class.
      *
      * @return false if the receiver could not be invoked.
      */
-    private boolean trigger (Intent intent, Class<?> cls) {
+    private boolean trigger(Intent intent, Class<?> cls) {
         BroadcastReceiver receiver;
 
         try {
@@ -274,7 +270,8 @@ public final class Notification {
      */
     public void clear() {
         getNotMgr().cancel(getId());
-        if (isRepeating()) return;
+        if (isRepeating())
+            return;
         unpersist();
     }
 
@@ -291,23 +288,23 @@ public final class Notification {
     /**
      * Cancel the scheduled future local notification.
      *
-     * Create an intent that looks similar, to the one that was registered
-     * using schedule. Making sure the notification id in the action is the
-     * same. Now we can search for such an intent using the 'getService'
-     * method and cancel it.
+     * Create an intent that looks similar, to the one that was registered using schedule. Making
+     * sure the notification id in the action is the same. Now we can search for such an intent
+     * using the 'getService' method and cancel it.
      */
     private void cancelScheduledAlarms() {
         SharedPreferences prefs = getPrefs(PREF_KEY_PID);
         String id = options.getIdentifier();
         int notificationId = options.getId();
-        Set<String> actions     = prefs.getStringSet(id, null);
+        Set<String> actions = prefs.getStringSet(id, null);
 
         if (actions == null)
             return;
 
         for (String action : actions) {
             Intent intent = new Intent(action);
-            PendingIntent pi = LaunchUtils.getBroadcastPendingIntent(context, intent, notificationId);
+            PendingIntent pi =
+                    LaunchUtils.getBroadcastPendingIntent(context, intent, notificationId);
             if (pi != null) {
                 getAlarmMgr().cancel(pi);
             }
@@ -318,33 +315,32 @@ public final class Notification {
      * Present the local notification to user.
      */
     public void show() {
-        if (builder == null) return;
+        if (builder == null)
+            return;
 
         if (options.showChronometer()) {
             cacheBuilder();
         }
 
         grantPermissionToPlaySoundFromExternal();
-        new NotificationVolumeManager(context, options)
-            .adjustAlarmVolume();
+        new NotificationVolumeManager(context, options).adjustAlarmVolume();
         getNotMgr().notify(getId(), builder.build());
     }
 
     /**
      * Update the notification properties.
      *
-     * @param updates  The properties to update.
+     * @param updates The properties to update.
      * @param receiver Receiver to handle the trigger event.
      */
-    void update (JSONObject updates, Class<?> receiver) {
+    void update(JSONObject updates, Class<?> receiver) {
         mergeJSONObjects(updates);
         persist(null);
 
         if (getType() != Type.TRIGGERED)
             return;
 
-        Intent intent = new Intent(context, receiver)
-                .setAction(PREF_KEY_ID + options.getId())
+        Intent intent = new Intent(context, receiver).setAction(PREF_KEY_ID + options.getId())
                 .putExtra(Notification.EXTRA_ID, options.getId())
                 .putExtra(Notification.EXTRA_UPDATE, true);
 
@@ -368,13 +364,13 @@ public final class Notification {
     }
 
     /**
-     * Persist the information of this notification to the Android Shared
-     * Preferences. This will allow the application to restore the notification
-     * upon device reboot, app restart, retrieve notifications, aso.
+     * Persist the information of this notification to the Android Shared Preferences. This will
+     * allow the application to restore the notification upon device reboot, app restart, retrieve
+     * notifications, aso.
      *
      * @param ids List of intent actions to persist.
      */
-    private void persist (Set<String> ids) {
+    private void persist(Set<String> ids) {
         String id = options.getIdentifier();
         SharedPreferences.Editor editor;
 
@@ -393,9 +389,9 @@ public final class Notification {
     /**
      * Remove the notification from the Android shared Preferences.
      */
-    private void unpersist () {
-        String[] keys = { PREF_KEY_ID, PREF_KEY_PID };
-        String id     = options.getIdentifier();
+    private void unpersist() {
+        String[] keys = {PREF_KEY_ID, PREF_KEY_PID};
+        String id = options.getIdentifier();
         SharedPreferences.Editor editor;
 
         for (String key : keys) {
@@ -406,8 +402,8 @@ public final class Notification {
     }
 
     /**
-     * Since Android 7 the app will crash if an external process has no
-     * permission to access the referenced sound file.
+     * Since Android 7 the app will crash if an external process has no permission to access the
+     * referenced sound file.
      */
     private void grantPermissionToPlaySoundFromExternal() {
         if (builder == null)
@@ -416,21 +412,20 @@ public final class Notification {
         String sound = builder.getExtras().getString(Options.EXTRA_SOUND);
         Uri soundUri = Uri.parse(sound);
 
-        context.grantUriPermission(
-                "com.android.systemui", soundUri,
+        context.grantUriPermission("com.android.systemui", soundUri,
                 Intent.FLAG_GRANT_READ_URI_PERMISSION);
     }
 
     /**
      * Merge two JSON objects.
      */
-    private void mergeJSONObjects (JSONObject updates) {
+    private void mergeJSONObjects(JSONObject updates) {
         JSONObject dict = options.getDict();
-        Iterator it     = updates.keys();
+        Iterator it = updates.keys();
 
         while (it.hasNext()) {
             try {
-                String key = (String)it.next();
+                String key = (String) it.next();
                 dict.put(key, updates.opt(key));
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -457,14 +452,14 @@ public final class Notification {
      *
      * @return null if no builder instance could be found.
      */
-    static NotificationCompat.Builder getCachedBuilder (int key) {
+    static NotificationCompat.Builder getCachedBuilder(int key) {
         return (cache != null) ? cache.get(key) : null;
     }
 
     /**
      * Caches the builder instance so it can be used later.
      */
-    private void clearCache () {
+    private void clearCache() {
         if (cache != null) {
             cache.delete(getId());
         }
@@ -473,22 +468,21 @@ public final class Notification {
     /**
      * Shared private preferences for the application.
      */
-    private SharedPreferences getPrefs (String key) {
+    private SharedPreferences getPrefs(String key) {
         return context.getSharedPreferences(key, Context.MODE_PRIVATE);
     }
 
     /**
      * Notification manager for the application.
      */
-    private NotificationManager getNotMgr () {
-        return (NotificationManager) context
-                .getSystemService(Context.NOTIFICATION_SERVICE);
+    private NotificationManager getNotMgr() {
+        return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     /**
      * Alarm manager for the application.
      */
-    private AlarmManager getAlarmMgr () {
+    private AlarmManager getAlarmMgr() {
         return (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
