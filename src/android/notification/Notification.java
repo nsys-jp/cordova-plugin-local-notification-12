@@ -302,7 +302,7 @@ public final class Notification {
             return;
 
         for (String action : actions) {
-            Intent intent = new Intent(action);
+            Intent intent = new Intent(action).setPackage(context.getPackageName());
             PendingIntent pi =
                     LaunchUtils.getBroadcastPendingIntent(context, intent, notificationId);
             if (pi != null) {
