@@ -202,8 +202,7 @@ public class LocalNotification extends CordovaPlugin {
      * required for android 13 to get the runtime notification permissions
      *
      *
-     * @param command The callback context used when calling back into
-     *                JavaScript.
+     * @param command The callback context used when calling back into JavaScript.
      */
     private void dummyNotifications(CallbackContext command) {
 
@@ -213,24 +212,25 @@ public class LocalNotification extends CordovaPlugin {
         String NOTIFICATION_CHANNEL_ID = "10004457";
         String notificationMsg = "Test";
         String notificationTitle = "Mdd";
-        Context context =  cordova.getActivity().getApplicationContext();
+        Context context = cordova.getActivity().getApplicationContext();
 
         Intent intentToLaunch = new Intent(context, TriggerReceiver.class);
         intentToLaunch.putExtra("Callfrom", "reminders");
 
-        final  resultPendingIntent = PendingIntent.getActivity(context,
-                0, intentToLaunch, PendingIntent.FLAG_IMMUTABLE);
+        final PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(context, 0, intentToLaunch, PendingIntent.FLAG_IMMUTABLE);
 
-        mBuilder = new NotificationCompat.Builder(context,NOTIFICATION_CHANNEL_ID);
+        mBuilder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID);
 
         mBuilder.setContentIntent(resultPendingIntent);
 
-        mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
-        {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "NOTIFICATION_CHANNEL_NAME", importance);
+            NotificationChannel notificationChannel = new NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID, "NOTIFICATION_CHANNEL_NAME", importance);
             assert mNotificationManager != null;
             mBuilder.setChannelId(NOTIFICATION_CHANNEL_ID);
             mNotificationManager.createNotificationChannel(notificationChannel);
